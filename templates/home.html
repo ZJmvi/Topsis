@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analiza TOPSIS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Analiza TOPSIS</h1>
+    <br>
+    <p>To je vmesnik, za analizo TOPSIS.</p>
+    <p>Za izvedbo analize TOPSIS lahko podatke vnesete ročno ali jih uvozite iz že pripravljenih csv datotek.</p>
+    <p>Prosim izberite možnost za vnos podatkov za analizo.</p>
+    <br>
+
+    <a href="/manual_input">
+        <button>Ročni vnos podatkov</button>
+    </a>
+    <a href="/upload">
+        <button>Uvoz podatkov iz datoteke</button>
+    </a>
+
+</body>
+</html>

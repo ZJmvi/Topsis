@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uvoz datotek</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <h1>Uvoz podatkov iz datoteke</h1>
+  <br>
+  <p>Izberite vse tri CSV datoteke za uvoz podatkov:</p>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+      <label for="file1">CSV datoteka z <strong>odločitveno matriko</strong>:</label>
+      <input type="file" name="file1" id="file1" required><br><br>
+      <label for="file2">CSV datoteka z <strong>utežmi</strong>:</label>
+      <input type="file" name="file2" id="file2" required><br><br>
+      <label for="file3">CSV datoteka s <strong>kategorizacijo atributov</strong>:</label>
+      <input type="file" name="file3" id="file3" required><br><br>
+      <input type="submit" value="Uvoz podatkov">
+  </form>
+</body>
+</html>

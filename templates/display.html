@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prikaz podatkov</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <h1>Prikaz podatkov</h1>
+    <br>
+    <h2>Odločitvena matrika</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                {% for i in range(data1[0]|length) %}
+                <th>Atribut {{ i + 1 }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data1 %}
+            <tr>
+                <td>Opcija {{ loop.index }}</td>
+                {% for col in row %}
+                <td>{{ col }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h2>Tabela z utežmi</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                {% for i in range(data2[0]|length) %}
+                <th>Utež za atribut {{ i + 1 }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data2 %}
+            <tr>
+                {% for col in row %}
+                <td>{{ col }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h2>Tabela s kategorizacijo atributov</h2>
+    <p>c - Cost</p>
+    <p>b - Benefit</p>
+    <table border="1">
+        <thead>
+            <tr>
+                {% for i in range(data3[0]|length) %}
+                <th>Kategorija atributa {{ i + 1 }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data3 %}
+            <tr>
+                {% for col in row %}
+                <td>{{ col }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h2>Normalizirana matrika</h2>
+    <table border="1">
+      <thead>
+          <tr>
+              <th></th>
+              {% for i in range(datatemp1[0]|length) %}
+              <th>Atribut {{ i + 1 }}</th>
+              {% endfor %}
+          </tr>
+      </thead>
+    <tbody>
+        {% for row in datatemp1 %}
+        <tr>
+            <td>Opcija {{ loop.index }}</td>
+            {% for col in row %}
+            <td>{{ col }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+    <h2>Utežena normalizirana matrika</h2>
+    <table border="1">
+    <thead>
+        <tr>
+            <th></th>
+            {% for i in range(datatemp2[0]|length) %}
+            <th>Atribut {{ i + 1 }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in datatemp2 %}
+        <tr>
+            <td>Opcija {{ loop.index }}</td>
+            {% for col in row %}
+            <td>{{ col }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+    <h2>Vrednosti Di* in Di-</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Di*</th>
+                <th>Di-</th>    
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in datatemp3 %}
+            <tr>
+                <td>Opcija {{ loop.index }}</td>
+                {% for col in row %}
+                <td>{{ col }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+</table>
+<br>
+    <h2>Koeficient bližine Ci*</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Ci*</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, values in dic.items() %}
+                <tr>
+                    <td>Opcija {{ key }}</td>
+                    <td>{{ values | join(', ') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div>
+        <h2>Urejen seznam opcij</h2>
+        <table border="1" id="sortedTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Ci*</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in sorted_list %}
+                    <tr>
+                        <td>Opcija {{ key }}</td>
+                        <td>{{ value | join(', ') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <br>
+    <h2>Graf opcij analize TOPSIS</h2>
+    <img src="{{ url_for('static', filename='topsis_plot.png') }}" alt="TOPSIS Results" id="topsisPlot"><br>
+    <div class="container">                    
+        <input  type="button" value="Izvoz v PDF"              
+                onclick="generatePDF()">
+    </div>
+
+    <script type="text/javascript">
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const sortedTable = document.querySelector("#sortedTable");
+            const topsisPlot = document.querySelector("#topsisPlot");
+
+            if (sortedTable && topsisPlot) {
+                html2canvas(sortedTable).then(canvas1 => {
+                    html2canvas(topsisPlot).then(canvas2 => {
+                        const imgData1 = canvas1.toDataURL('image/png');
+                        const imgData2 = canvas2.toDataURL('image/png');
+                        const doc = new jsPDF();
+                        doc.setFontSize(28); // Nastavi velikost besedila
+                        doc.setFont("helvetica", "bold"); // Nastavi krepko besedilo
+                        doc.text("Izpis analize TOPSIS", 60, 10); // Poimenovanje prve slike
+                        doc.setFontSize(20); // Nastavi velikost besedila
+                        doc.text("Urejen seznam opcij", 10, 40); // Poimenovanje prve slike
+                        doc.addImage(imgData1, 'PNG', 10, 50, 80, 80); // Prilagodi velikost in položaj po potrebi
+                        doc.text("Graf opcij analize TOPSIS", 10, 150); // Poimenovanje druge slike
+                        doc.addImage(imgData2, 'PNG', 10, 160, 200, 130); // Prilagodi velikost in položaj po potrebi
+                        doc.save('Rezultat_analize_TOPSIS.pdf');
+                    });
+                });
+            } else {
+                console.error("Elementi niso najdeni.");
+            }
+        }
+    </script>
+    <br>
+    <a href="/home">
+        <button>Nov izračun</button>
+        <button onclick="fetch('/shutdown', {method: 'POST'})">Ustavi strežnik</button>
+    </a>
+</body>
+</html>
